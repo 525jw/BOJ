@@ -3,7 +3,7 @@
 using namespace std;
 
 int mat[16][16],n,maxv=-1;
-int dp[(1<<16)-1][16][10]={0};
+int cache[(1<<16)-1][16][10]={0};
 typedef struct _queue{
     int visited; int seller; int nowprice; int owned;
 } queue;
@@ -20,8 +20,8 @@ void bfs(){
     rear=(rear+1)%QUESIZE;
     while(front!=rear){
         cout << "# " << front << ' ' << rear << " #" << endl;
-        if(dp[que[front].visited][que[front].seller][que[front].nowprice] > que[front].owned){front++;continue;}
-        dp[que[front].visited][que[front].seller][que[front].nowprice]=que[front].owned;
+        if(cache[que[front].visited][que[front].seller][que[front].nowprice] > que[front].owned){front++;continue;}
+        cache[que[front].visited][que[front].seller][que[front].nowprice]=que[front].owned;
         if(maxv<que[front].owned) maxv=que[front].owned;
         //if(maxv==n) break;
         for(int i=1;i<=n;i++){
