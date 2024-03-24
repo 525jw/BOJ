@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#define MODNUM 1000000
+#define MODNUM 1000000007
 using namespace std;
 long long n;
 //0, 1, 2, 3, 4, 5, 6,  7,  8,  9, 10, 11,  12,  13,  14,  15,  16,   17
