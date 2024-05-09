@@ -37,51 +37,53 @@ int romeToArab(string inp){
     return ret;
 }
 string arabToRome(int inp){
-    //- Normal case
-    static map<int,string,greater<int>> romeNumber={
-        {1, "I"},
-        {5, "V"},
-        {10,"X"},
-        {50,"L"},
-        {100,"C"},
-        {500,"D"},
-        {1000,"M"}
-    };
-    //- Small number before large number case
-    static map<int,string,greater<int>> romeNumberException={
-        {4,"IV"}, 
-        {9,"IX"}, 
-        {40,"XL"}, 
-        {90,"XC"}, 
-        {400,"CD"}, 
-        {900,"CM"}
-    };
     string ret="";
-    while(inp){
-        cout<<endl<<inp;
-        for(auto iter=romeNumber.begin();iter!=romeNumber.end();iter++){
-            if(inp%iter->first>=0){
-                inp/=iter->first;
-                ret.append(iter->second);
-                break;
-            }
-        }
-        for(auto iter=romeNumberException.begin();iter!=romeNumberException.end();iter++){
-            if(inp%iter->first>=0){
-                inp/=iter->first;
-                ret.append(iter->second);
-                break;
-            }
-        }
+    for(int i=0;i<3 && inp>=1000;i++,inp-=1000)
+        ret+='M';
+    if(inp>=900){
+        ret+="CM";
+        inp-=900;
+    }else if(inp>=500){
+        ret+="D";
+        inp-=500;
+    }else if(inp>=400){
+        ret+="CD";
+        inp-=400;
     }
+    for(int i=0;i<3 && inp>=100;i++,inp-=100)
+        ret+='C';
+    if(inp>=90){
+        ret+="XC";
+        inp-=90;
+    }else if(inp>=50){
+        ret+="L";
+        inp-=50;
+    }else if(inp>=40){
+        ret+="XL";
+        inp-=40;
+    }
+    for(int i=0;i<3 && inp>=10;i++,inp-=10)
+        ret+="X";
+    if(inp>=9){
+        ret+="IX";
+        inp-=9;
+    }else if(inp>=5){
+        ret+="V";
+        inp-=5;
+    }else if(inp>=4){
+        ret+="IV";
+        inp-=4;
+    }
+    for(int i=0;i<3 && inp>=1;i++,inp-=1)
+        ret+="I";
     return ret;
 }
 int main(){
     string inp1,inp2;
     cin>>inp1>>inp2;
     int otp1=romeToArab(inp1),otp2=romeToArab(inp2);
-    cout<<otp1+otp2;
+    cout<<otp1+otp2<<endl;
     string otp3=arabToRome(otp1+otp2);
-    cout<<endl<<otp3;
+    cout<<otp3<<endl;
     return 0;
 }
