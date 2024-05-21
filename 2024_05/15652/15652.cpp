@@ -1,32 +1,29 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
 int N,M;
-vector<int> inp;
 vector<vector<int>> answer;
 vector<int> included;
 void chknode(int i){
-
+    if(i<=N){
+        if(included.size()==M){
+            answer.push_back(included);
+        }else{
+            for(int j=i;j<=N;j++){
+                included.push_back(j);
+                chknode(j);
+                included.pop_back();
+            }
+        }
+    }
 }
 int main(){
     cin>>N>>M;
-    inp.resize(N);
-    for(int i=0;i<N;i++)
-        cin>>inp[i];
-    sort(inp.begin(),inp.end());
-
-
-
-
-
-
-
-
+    chknode(1);
     for(int i=0;i<answer.size();i++){
         for(int j=0;j<answer[i].size();j++)
             cout<<answer[i][j]<<' ';
         cout<<endl;
     }
     return 0;
-}   
+}
