@@ -1,18 +1,12 @@
 #include <iostream>
 #include <queue>
+#include <algorithm>
 #include <vector>
 using namespace std;
 
 typedef struct pair<long long,long long> lec;
-struct compare{
-    bool operator()(const lec& a,const lec& b){
-        if(a.second==b.second)  
-            return a.first>b.first;
-        else return a.second>b.second;
-    }
-};
-priority_queue<lec,vector<lec>,compare> pq;
-
+priority_queue<long long,vector<long long>,greater<long long>> pq;
+vector<lec> lecs;
 
 int main(){
     int N;
@@ -20,23 +14,14 @@ int main(){
     long long S,T;
     while(N--){
         cin>>S>>T;
-        pq.push({S,T});
+        lecs.push_back({S,T});
     }
-    // while(!pq.empty()){
-    //     cout<<pq.top().first<<' '<<pq.top().second<<endl;
-    //     pq.pop();
-    // }
-    int cnt=1;
-    int maxval=-1;
-    long long endtime=0;
-    while(!pq.empty()){
-        if(endtime<=pq.top().first){
-            maxval=maxval<cnt?cnt:maxval;
-            endtime=pq.top().second;
-            cnt=0;
-        }
-        pq.pop();
-        cnt++;
+    sort(lecs.begin(),lecs.end());
+    pq.push(0);
+    for(int i=0;i<lecs.size();i++){
+        if(pq.top()<=lecs[i].first)
+            pq.pop();
+        pq.push(lecs[i].second);
     }
-    cout<<maxval;
+    cout<<pq.size();
 }
