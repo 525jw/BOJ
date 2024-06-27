@@ -3,73 +3,79 @@
 #include <queue>
 using namespace std;
 
+typedef struct _element{
+    int num;
+    int time;
+    int inDegree;
+    vector<int> outLink;
+}element;
+
 int T,N,K,X,Y,W;
 vector<int> D;
+vector<element> nodelist;
 
-vector<int> inDegree;
-vector<vector<int>> outLink;
-int res;
+struct cmp{
+    bool operator()(element a, element b){
+        return a.time > b.time;
+    }
+};
+priority_queue<element,vector<element>,cmp> pq,temp;
 
 int main(){
-    cin>>T;
+    scanf("%d",&T);
     while(T--){
-        cin>>N>>K;
+        scanf("%d %d",&N,&K);
         D.clear();
         D.resize(N+1);
-        for(int i=1;i<=N;i++)
-            cin>>D[i];
-        outLink.clear();
-        outLink.resize(N+1);
-        inDegree.clear();
-        inDegree.resize(N+1,0);
-        for(int i=1;i<=K;i++){
-            cin>>X>>Y;
-            outLink[X].push_back(Y);
-            inDegree[Y]++;
+        nodelist.clear();
+        nodelist.resize(N+1);
+        for(int i=1;i<=N;i++){
+            scanf("%d",&D[i]);
+            nodelist[i].num=i;
+            nodelist[i].time=D[i];
+            nodelist[i].inDegree=0;
+            nodelist[i].outLink.clear();
         }
-        cin>>W;
+        for(int i=1;i<=K;i++){
+            scanf("%d %d",&X,&Y);
+            nodelist[X].outLink.push_back(Y);
+            nodelist[Y].inDegree++;
+        }
+        scanf("%d",&W);
 
-        // for(int i=1;i<=N;i++){
-        //     cout<<i<<"-> ";
-        //     for(int j=0;j<outLink[i].size();j++){
-        //         cout<<outLink[i][j]<<' ';
-        //     }
-        //     cout<<endl;
-        // }
-
-        queue<int> que;
+        while(!pq.empty()) pq.pop();
+        while(!temp.empty()) temp.pop();
         vector<bool> visited(N+1,false);
-        res=0;
+        element curjob;
         bool flag=true;
-        int latetime;
 
         while(flag){
-            //cout<<" : "<<que.size()<<endl;
-            // for(int i=1;i<=K;i++)
-            //     cout<<inDegree[i]<<' ';
+            // for(int i=1;i<=N;i++){
+            //     cout<<nodelist[i].time<<' ';
+            // }
             // cout<<endl;
-            latetime=0;
-            while(!que.empty()){
-                for(int i=0;i<outLink[que.front()].size();i++)
-                    inDegree[outLink[que.front()][i]]--;
-                visited[que.front()]=true;
-                latetime=max(latetime,D[que.front()]);
-                que.pop();
+            while(!pq.empty()){
+                curjob=pq.top();
+                visited[curjob.num]=true;
+                for(int i=0;i<curjob.outLink.size();i++){
+                    nodelist[curjob.outLink[i]].inDegree--;
+                    nodelist[curjob.outLink[i]].time=max(D[curjob.outLink[i]]+curjob.time,nodelist[curjob.outLink[i]].time);
+                }
+                pq.pop();
             }
-            res+=latetime;
+
             for(int i=1;i<=N;i++){
-                if(inDegree[i]==0 && !visited[i]){
+                if(nodelist[i].inDegree==0 && !visited[i]){
                     if(i==W){
-                        res+=D[i];
+                        curjob=nodelist[i];
                         flag=false;
-                        break;
                     }else{
-                        que.push(i);
+                        pq.push(nodelist[i]);
                     }
                 }
             }
         }
-        cout<<res<<endl;
+        printf("%d\n",curjob.time);
     }
     return 0;
 }
