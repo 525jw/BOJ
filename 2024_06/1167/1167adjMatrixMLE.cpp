@@ -5,26 +5,35 @@ using namespace std;
 int V;
 vector<vector<int>> W;
 vector<bool> visited;
-vector<vector<int>> cnctnode;
+vector<vector<int>> cnctnode;//connected node
 
-void dfs(int from){
+int dfs(int from){
     visited[from]=true;
-    for(int to=1;to<=V;to++){
-
+    int to;
+    int maxval=0;
+    for(int i=0;i<cnctnode[from].size();i++){
+        to=cnctnode[from][i];
+        if(!visited[to]){
+            maxval=max(maxval,W[from][to]+dfs(to));
+        }
     }
+    return maxval;
 }
 int main(){
     cin>>V;
     W.resize(V+1,vector<int>(V+1,0));
     visited.resize(V+1,false);
-    int to,weight;
+    cnctnode.resize(V+1);
+    int from,to,weight;
     int maxweight=-1,maxfrom,maxto;
-    for(int from=1;from<=V;from++){
+    for(int i=1;i<=V;i++){
+        cin>>from;
         while(1){
             cin>>to;
             if(to==-1) break;
             cin>>weight;
             W[from][to]=weight;
+            cnctnode[from].push_back(to);
             if(weight>maxweight){
                 maxfrom=from;
                 maxto=to;
@@ -33,13 +42,16 @@ int main(){
         }
     }
 
+    int res=0;
     visited[maxto]=true;
-    dfs(maxfrom);
+    res+=dfs(maxfrom);
 
-    visited.clear();
+    fill(visited.begin(),visited.end(),false);
     visited[maxfrom]=true;
-    dfs(maxto);
+    res+=dfs(maxto);
 
+    res+=maxweight;
 
+    cout<<res;
     return 0;
 }
